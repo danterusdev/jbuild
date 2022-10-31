@@ -4,11 +4,11 @@ import java.util.List;
 import java.io.IOException;
 
 public class Builder {
-    public static void buildSources(SourceFiles sources, String outputDir) throws IOException {
-        buildSources(sources, new File(outputDir));
+    public static OutputFiles buildSources(SourceFiles sources, String outputDir) throws IOException {
+        return buildSources(sources, new File(outputDir));
     }
 
-    public static void buildSources(SourceFiles sources, File outputDir) throws IOException {
+    public static OutputFiles buildSources(SourceFiles sources, File outputDir) throws IOException {
         outputDir.mkdirs();
 
         List<String> arguments = new ArrayList<>();
@@ -19,5 +19,10 @@ public class Builder {
             arguments.add(file.getAbsolutePath());
         }
         Runtime.getRuntime().exec(arguments.toArray(new String[0]));
+
+        OutputFiles outputFiles = new OutputFiles();
+        outputFiles.addOutputDirectory(outputDir);
+
+        return outputFiles;
     }
 }

@@ -1,10 +1,15 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.nio.file.Path;
 
 public class SourceFiles {
 
     private final List<File> files = new ArrayList<>();
+
+    public void addSourceFile(File file) {
+        files.add(file);
+    }
 
     public void addSourceDirectory(String directory) {
         addSourceDirectory(new File(directory));
@@ -15,7 +20,7 @@ public class SourceFiles {
             if (file.isDirectory()) {
                 this.addSourceDirectory(file);
             } else if (file.getName().endsWith(".java")) {
-                files.add(file);
+                this.addSourceFile(file);
             }
         }
     }

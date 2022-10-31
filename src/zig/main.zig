@@ -34,6 +34,8 @@ pub fn main() anyerror!void {
 
         try run_shell(java_path, args[0..args.len], env[0..env.len]);
     }
+
+    try std.fs.cwd().deleteFile("Build.class");
 }
 
 pub fn run_shell(path: [*:0]const u8, child_argv: [*:null]const ?[*:0]const u8, envp: [*:null]const ?[*:0]const u8) anyerror!void {
