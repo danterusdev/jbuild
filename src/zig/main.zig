@@ -7,15 +7,11 @@ pub fn main() anyerror!void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
 
-    const arg = args_in.next(allocator);
-    if (arg == null) {
+    if (args_in.next(allocator)) |arg| {
+        try std.os.chdir(try arg);
+    } else {
         std.debug.print("Must provide a directory!\n", .{});
         return;
-    }
-
-    if (arg) |arg2| {
-        const arg3 = try arg2;
-        try std.os.chdir(arg3);
     }
 
     const java_path = "/lib/jvm/java-11-openjdk/bin/java";
@@ -28,11 +24,21 @@ pub fn main() anyerror!void {
         try run_shell(javac_path, args[0..args.len], env[0..env.len]);
     }
 
+    var arguments = std.ArrayList(?[*:0]const u8).init(allocator);
+    try arguments.append(java_path);
+    try arguments.append("-cp");
+    try arguments.append("JBuild.jar:.");
+    try arguments.append("Main");
+
+    while (args_in.next(allocator)) |arg| {
+        try arguments.append(try arg);
+    }
+
     {
-        const args = [_:null] ?[*:0] u8{java_path, "-cp", "JBuild.jar:.", "Main"};
+        const args = try arguments.toOwnedSliceSentinel(null);
         const env = [_:null] ?[*:0] u8{};
 
-        try run_shell(java_path, args[0..args.len], env[0..env.len]);
+        try run_shell(java_path, args, env[0..env.len]);
     }
 
     try std.fs.cwd().deleteFile("Build.class");
