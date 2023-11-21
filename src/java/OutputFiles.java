@@ -11,6 +11,10 @@ public class OutputFiles {
         files.add(new Pair<>(packageName, file));
     }
 
+    public void addOutputFiles(OutputFiles files) {
+        this.files.addAll(files.getFiles());
+    }
+
     public void addOutputDirectory(String directory) {
         addOutputDirectory(new File(directory));
     }

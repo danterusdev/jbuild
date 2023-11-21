@@ -6,6 +6,7 @@ import java.io.IOException;
 public class Builder {
 
     private final SourceFiles sourceFiles = new SourceFiles();
+    private final List<Library> libraries = new ArrayList<>();
     private File outputDir = null;
 
     public void addSourceFiles(SourceFiles sourceFiles) {
@@ -18,6 +19,7 @@ public class Builder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.libraries.add(library);
     }
 
     public void setOutputDirectory(File outputDir) {
@@ -29,12 +31,25 @@ public class Builder {
 
         List<String> arguments = new ArrayList<>();
         arguments.add("javac");
+
         arguments.add("-d");
         arguments.add(outputDir.getAbsolutePath());
+
+        arguments.add("-cp");
+        StringBuilder librariesString = new StringBuilder();
+        for (Library library : libraries) {
+            librariesString.append(library.getLocalFile().getAbsolutePath());
+            librariesString.append(':');
+        }
+        librariesString.append('.');
+        arguments.add(librariesString.toString());
+
         for (File file : sourceFiles.getFiles()) {
             arguments.add(file.getAbsolutePath());
         }
-        Runtime.getRuntime().exec(arguments.toArray(new String[0]));
+        Process process = Runtime.getRuntime().exec(arguments.toArray(new String[0]));
+        process.getInputStream().transferTo(System.out);
+        process.getErrorStream().transferTo(System.err);
 
         OutputFiles outputFiles = new OutputFiles();
         outputFiles.addOutputDirectory(outputDir);

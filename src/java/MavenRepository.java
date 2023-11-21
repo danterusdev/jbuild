@@ -43,11 +43,18 @@ public class MavenRepository {
                     localPathFile.getParentFile().mkdirs();
                 }
 
-                InputStream stream = fullUrl.openStream();
-                Files.copy(stream, localPathFile.toPath());
+                if (!localPathFile.exists()) {
+                    InputStream stream = fullUrl.openStream();
+                    Files.copy(stream, localPathFile.toPath());
+                }
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        public File getLocalFile() {
+            String subPath = group.replace(".", "/") + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
+            return new File(localPath, subPath);
         }
 
     }

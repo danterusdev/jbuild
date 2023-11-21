@@ -20,6 +20,10 @@ public class JarPackager {
     }
 
     public void doPackage(File outputFile) throws IOException {
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+
         JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(outputFile));
         
         for (Pair<String, File> file : files) {
