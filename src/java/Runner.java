@@ -17,6 +17,10 @@ public class Runner {
     }
 
     public void run() throws IOException {
+        if (JBuild.LOG) {
+            System.out.println("Running...");
+        }
+
         List<String> arguments = new ArrayList<>();
         arguments.add("java");
 

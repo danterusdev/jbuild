@@ -14,11 +14,6 @@ public class Builder {
     }
 
     public void addLibrary(Library library) {
-        try {
-            library.download();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         this.libraries.add(library);
     }
 
@@ -27,6 +22,18 @@ public class Builder {
     }
 
     public OutputFiles build() throws IOException {
+        if (JBuild.LOG) {
+            System.out.println("Building...");
+        }
+
+        for (Library library : libraries) {
+            try {
+                library.download();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         outputDir.mkdirs();
 
         List<String> arguments = new ArrayList<>();

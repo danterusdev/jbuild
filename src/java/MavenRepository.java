@@ -10,9 +10,9 @@ import java.nio.file.Path;
 public class MavenRepository {
 
     private final String url;
-    private final String localPath;
+    private final File localPath;
 
-    public MavenRepository(String url, String localPath) {
+    public MavenRepository(String url, File localPath) {
         this.url = url;
         this.localPath = localPath;
     }
@@ -43,10 +43,16 @@ public class MavenRepository {
                     localPathFile.getParentFile().mkdirs();
                 }
 
-                if (!localPathFile.exists()) {
-                    InputStream stream = fullUrl.openStream();
-                    Files.copy(stream, localPathFile.toPath());
+                if (localPathFile.exists()) {
+                    localPathFile.delete();
                 }
+
+                if (JBuild.LOG) {
+                    System.out.println("Retrieving maven library " + group + "-" + version + "...");
+                }
+
+                InputStream stream = fullUrl.openStream();
+                Files.copy(stream, localPathFile.toPath());
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }

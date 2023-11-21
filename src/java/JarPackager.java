@@ -15,10 +15,6 @@ public class JarPackager {
         files.addAll(outputFiles.getFiles());
     }
 
-    public void doPackage(String outputFile) throws IOException {
-        doPackage(new File(outputFile));
-    }
-
     public void doPackage(File outputFile) throws IOException {
         if (outputFile.exists()) {
             outputFile.delete();
