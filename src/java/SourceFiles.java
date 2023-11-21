@@ -11,6 +11,10 @@ public class SourceFiles {
         files.add(file);
     }
 
+    public void addSourceFiles(SourceFiles files) {
+        this.files.addAll(files.getFiles());
+    }
+
     public void addSourceDirectory(String directory) {
         addSourceDirectory(new File(directory));
     }
